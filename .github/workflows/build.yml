@@ -50,6 +50,7 @@ jobs:
           #-DCMAKE_LIBRARY_PATH="$env:blasdir/lib"
           -DWHISPER_EXAMPLES=ON
           -DWHISPER_SUPPORT_SDL2=${{ matrix.sdl2 }}
+          -DWHISPER_CLBLAST=ON
 
       - name: Build
         run: |

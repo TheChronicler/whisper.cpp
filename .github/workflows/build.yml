@@ -37,7 +37,7 @@ jobs:
           echo "SDL2_DIR=$env:GITHUB_WORKSPACE/SDL2-${{ matrix.s2ver }}/cmake" >> $env:GITHUB_ENV
 
       - name: Install OpenCL
-        run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl clblast sdl2
+        run: vcpkg.exe --triplet=x64-windows install opencl clblast sdl2
 
       - name: Configure
         run: >

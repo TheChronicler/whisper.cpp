@@ -26,14 +26,8 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1
 
-      - name: Fetch CLBlast
-        run: |
-          C:/msys64/usr/bin/wget.exe -qO clblast.7z ${{ matrix.obzip }}
-          7z x clblast.7z -oclblast -y
-          copy blas/include/cblas.h .
-          copy blas/include/openblas_config.h .
-          copy clblast/CLBlast-1.6.0-windows-x64/* .
-          echo "blasdir=$env:GITHUB_WORKSPACE/blas" >> $env:GITHUB_ENV
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Fetch SDL2 and set SDL2_DIR
         if: matrix.sdl2 == 'ON'
@@ -41,6 +35,9 @@ jobs:
           C:/msys64/usr/bin/wget.exe -qO sdl2.zip https://github.com/libsdl-org/SDL/releases/download/release-${{ matrix.s2ver }}/SDL2-devel-${{ matrix.s2ver }}-VC.zip
           7z x sdl2.zip
           echo "SDL2_DIR=$env:GITHUB_WORKSPACE/SDL2-${{ matrix.s2ver }}/cmake" >> $env:GITHUB_ENV
+
+      - name: Install OpenCL
+        run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl clblast sdl2
 
       - name: Configure
         run: >
@@ -51,6 +48,7 @@ jobs:
           -DWHISPER_EXAMPLES=ON
           -DWHISPER_SUPPORT_SDL2=${{ matrix.sdl2 }}
           -DWHISPER_CLBLAST=ON
+          -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows
 
       - name: Build
         run: |

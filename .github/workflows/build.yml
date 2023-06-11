@@ -55,10 +55,6 @@ jobs:
           cd ./build
           msbuild ALL_BUILD.vcxproj -t:build -p:configuration=${{ matrix.build }} -p:platform=${{ matrix.arch }}
 
-      - name: Copy libopenblas.dll
-        if: matrix.blas == 'ON'
-        run: copy "$env:blasdir/bin/libopenblas.dll" build/bin/${{ matrix.build }}
-
       - name: Copy SDL2.dll
         run: copy "$env:SDL2_DIR/../lib/${{ matrix.s2arc }}/SDL2.dll" build/bin/${{ matrix.build }}
 
@@ -68,34 +64,34 @@ jobs:
           name: whisper-blas-bin-${{ matrix.arch }}
           #path: build/bin/${{ matrix.build }}
           
-  build_windows:
-    strategy:
-      matrix:
-        config: [
-          {os: windows-2019, arch: x64},
-        ]
+  # build_windows:
+  #   strategy:
+  #     matrix:
+  #       config: [
+  #         {os: windows-2019, arch: x64},
+  #       ]
 
-    runs-on: ${{ matrix.config.os }}
+  #   runs-on: ${{ matrix.config.os }}
 
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+  #   - name: Set up MSVC
+  #     uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Install OpenBLAS
-      run: |
-        mkdir openblas
-        cd openblas
-        C:\msys64\usr\bin\wget.exe https://github.com/xianyi/OpenBLAS/releases/download/v0.3.23/OpenBLAS-0.3.23-x64.zip
-        7z x OpenBLAS-0.3.23-x64.zip
-        pwd
-        ls
-    - name: Install OpenCL
-      run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl clblast sdl2
+  #   - name: Install OpenBLAS
+  #     run: |
+  #       mkdir openblas
+  #       cd openblas
+  #       C:\msys64\usr\bin\wget.exe https://github.com/xianyi/OpenBLAS/releases/download/v0.3.23/OpenBLAS-0.3.23-x64.zip
+  #       7z x OpenBLAS-0.3.23-x64.zip
+  #       pwd
+  #       ls
+  #   - name: Install OpenCL
+  #     run: vcpkg.exe --triplet=${{ matrix.config.arch }}-windows install opencl clblast sdl2
 
-    - name: Run CMake
-      run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${{ github.workspace }}\openblas
+  #   - name: Run CMake
+  #     run: cmake -S . -B build -DTESTS=ON -DCLIENTS=ON -DSAMPLES=ON -DOPENCL_ROOT=C:\vcpkg\packages\opencl_x64-windows -DCBLAS_ROOT=${{ github.workspace }}\openblas
 
-    - name: Compile the code
-      run: cmake --build build
+  #   - name: Compile the code
+  #     run: cmake --build build

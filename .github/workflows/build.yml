@@ -62,6 +62,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: whisper-blas-bin-${{ matrix.arch }}
+          path: build
           #path: build/bin/${{ matrix.build }}
           
   # build_windows:
